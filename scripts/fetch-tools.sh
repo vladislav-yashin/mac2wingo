@@ -231,6 +231,12 @@ build_hivex() {
         cd "$src"
         # Newer clang rejects the linker map flag the configure check uses.
         perl -pi -e 's/\Q-Wl,-M -Wl,\E/-Wl,-map -Wl,/' configure
+        # configure refuses to build the Perl bindings unless IO::Stringy is
+        # installed, but that module is only used by hivex's test suite (not by
+        # hivexregedit or Win::Hivex). Apple ships it in the system Perl's
+        # "Extras", while a stock/Homebrew Perl does not, so require only the
+        # modules actually needed to build the bindings.
+        perl -pi -e 's/for pm in Test::More ExtUtils::MakeMaker IO::Stringy; do/for pm in Test::More ExtUtils::MakeMaker; do/' configure
         # Perl bindings stay enabled: hivexregedit is needed once, at build
         # time, to pre-merge the BCD templates. They are not shipped.
         ./configure --prefix="$PREFIX" \

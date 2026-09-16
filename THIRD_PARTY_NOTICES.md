@@ -47,7 +47,10 @@ Modifications made to the bundled helpers by this project:
   drop the runtime `hivexregedit` dependency.
 - **readpe / libpe** — disable the OpenSSL-backed hashing module with an EVP
   shim and stubs so `peres` links without OpenSSL.
-- **hivex** — adjust the `configure` linker map flag check for current clang.
+- **hivex** — adjust the `configure` linker map flag check for current clang,
+  and stop requiring the test-only `IO::Stringy` Perl module so the Perl
+  bindings (needed at build time for `hivexregedit`) are built with a stock
+  Perl that does not ship Apple's system-Perl Extras.
 
 ## Rust dependencies
 
