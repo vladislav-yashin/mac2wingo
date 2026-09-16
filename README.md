@@ -116,6 +116,8 @@ During development the tools can live in `vendor/tools`, be pointed at through
 - macOS 11+.
 - Rust stable (1.95+). Install with [rustup](https://rustup.rs).
 - Xcode command line tools (only when building the bundled helper tools).
+- GNU autotools and related build tools (only when building the bundled
+  helper tools): `brew install autoconf automake libtool gettext pkgconf`.
 
 ## Build & run
 

@@ -69,6 +69,23 @@ require_macos() {
     command -v curl >/dev/null 2>&1 || die "curl is required"
 }
 
+# ntfs-3g's source archive ships only configure.ac, so GNU autotools are
+# needed to generate configure. macOS (and GitHub's runners) do not provide
+# them by default.
+require_autotools() {
+    local missing=()
+    local tool
+    for tool in autoreconf aclocal automake; do
+        command -v "$tool" >/dev/null 2>&1 || missing+=("$tool")
+    done
+    if ! command -v libtoolize >/dev/null 2>&1 && ! command -v glibtoolize >/dev/null 2>&1; then
+        missing+=(libtool)
+    fi
+    if [ "${#missing[@]}" -gt 0 ]; then
+        die "missing build tools: ${missing[*]} (install with: brew install autoconf automake libtool)"
+    fi
+}
+
 download() {
     local url="$1" out="$2"
     [ -f "$out" ] && return 0
@@ -78,6 +95,7 @@ download() {
 
 build_ntfs3g() {
     [ -x "$VENDOR_DIR/mkntfs" ] && return 0
+    require_autotools
     log "building ntfs-3g $NTFS3G_VERSION (library + ntfsprogs)"
     local src="$WORK_DIR/ntfs-3g-$NTFS3G_VERSION"
     if [ ! -d "$src" ]; then
@@ -88,7 +106,8 @@ build_ntfs3g() {
     fi
     (
         cd "$src"
-        autoreconf --install --force >/dev/null 2>&1 || true
+        autoreconf --install --force
+        [ -x ./configure ] || die "autoreconf did not generate ./configure for ntfs-3g"
         ./configure \
             --prefix="$PREFIX" \
             --disable-ntfs-3g \

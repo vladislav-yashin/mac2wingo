@@ -34,6 +34,11 @@ jobs:
             .tools-build
           key: helper-tools-${{ runner.os }}-${{ hashFiles('scripts/fetch-tools.sh') }}
 
+      # GitHub's macOS runners ship no GNU autotools, which ntfs-3g needs
+      # (its source archive has no pre-generated configure).
+      - name: Install build dependencies
+        run: brew install autoconf automake libtool gettext pkgconf
+
       - name: Build helper tools
         run: ./scripts/fetch-tools.sh
 
