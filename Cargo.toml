@@ -1,0 +1,46 @@
+[package]
+name = "mac2wingo"
+version = "0.1.0"
+edition = "2021"
+description = "Mac2Win Go - create bootable Windows To Go USB drives on macOS"
+license = "MIT"
+repository = "https://github.com/vladislav-yashin/mac2wingo"
+rust-version = "1.95"
+
+[dependencies]
+anyhow = "1.0.104"
+crossbeam-channel = "0.5.17"
+directories = "6.0.0"
+eframe = "0.36"
+egui = "0.36"
+plist = "1.10"
+quick-xml = "0.42"
+rfd = "0.17.2"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+sys-locale = "0.3.2"
+tempfile = "3.27.0"
+thiserror = "2.0.20"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2-app-kit = { version = "0.3", default-features = false, features = [
+    "std",
+    "NSResponder",
+    "NSView",
+    "NSControl",
+    "NSButton",
+    "NSWindow",
+] }
+raw-window-handle = "0.6"
+
+[dev-dependencies]
+egui_kittest = { version = "0.36", features = ["eframe"] }
+tiny-skia = "0.11"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"

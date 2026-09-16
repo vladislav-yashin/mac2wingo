@@ -1,0 +1,9 @@
+/target
+/dist
+/.tools-build
+/vendor/tools/*
+!/vendor/tools/README.md
+**/*.rs.bk
+*.pdb
+.DS_Store
+*.app
