@@ -159,6 +159,22 @@ Package the bundle into a distributable disk image, `dist/Mac2WinGo-<version>.dm
 ./scripts/build-dmg.sh   # or: just dmg
 ```
 
+The image is a styled installer: it opens with the app on the left and an
+`Applications` shortcut on the right, so the app can be dragged into
+`/Applications` like any standard macOS package. The window layout, background
+and icon positions are applied by [dmgbuild](https://github.com/dmgbuild/dmgbuild),
+which writes the Finder `.DS_Store` directly and therefore works on headless CI
+runners (no Finder/AppleScript). If `dmgbuild` is not installed, `build-dmg.sh`
+provisions it into `target/dmgbuild-venv` on first run; set `DMGBUILD` to point
+at an existing executable instead.
+
+The background (`assets/dmg_background.png` plus its `@2x` variant) is generated
+from a Rust drawing:
+
+```sh
+./scripts/generate-dmg-background.sh   # or: just dmg-bg
+```
+
 ### App icon
 
 The bundle icon (`assets/AppIcon.icns`) and the runtime Dock icon

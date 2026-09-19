@@ -32,3 +32,6 @@ dmg:
 
 icon:
     ./scripts/generate-icon.sh
+
+dmg-bg:
+    ./scripts/generate-dmg-background.sh
