@@ -9,15 +9,15 @@ use tiny_skia::{
     SpreadMode, Transform,
 };
 
-/// The DMG window is 660x420 points; we render at 2x for Retina displays.
+/// The DMG window is 660x500 points; we render at 2x for Retina displays.
 const SCALE: f32 = 2.0;
 const WIDTH: u32 = 660 * 2;
-const HEIGHT: u32 = 420 * 2;
+const HEIGHT: u32 = 500 * 2;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut pixmap = Pixmap::new(WIDTH, HEIGHT).expect("create pixmap");
 
-    let background = rect(0.0, 0.0, 660.0, 420.0).ok_or("background path")?;
+    let background = rect(0.0, 0.0, 660.0, 500.0).ok_or("background path")?;
     let gradient = LinearGradient::new(
         Point::from_xy(0.0, 0.0),
         Point::from_xy(0.0, HEIGHT as f32),

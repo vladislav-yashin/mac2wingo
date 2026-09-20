@@ -27,12 +27,12 @@ icon_locations = {
 if instructions:
     instructions_name = "How to open.txt"
     files.append((instructions, instructions_name))
-    # Centred below the app and Applications icons. The two icon labels end
-    # around y=310, the arrow drawn between them spans y=165..255, and this
-    # icon (128pt tall, centred at y=325) sits clear of both.
-    icon_locations[instructions_name] = (330, 325)
+    # Centred below the app and Applications icons. The window is taller than
+    # the two top icons need (the top bar is included in the bounds), so this
+    # icon sits at y=350 with room for its label below.
+    icon_locations[instructions_name] = (330, 350)
 
-window_rect = ((200, 200), (660, 420))
+window_rect = ((200, 200), (660, 500))
 default_view = "icon-view"
 icon_size = 128
 text_size = 13

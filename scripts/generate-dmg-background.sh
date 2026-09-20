@@ -19,6 +19,6 @@ echo "==> Rendering DMG background"
 cargo run --quiet --example gen_dmg_background
 
 echo "==> Downscaling to 1x"
-sips -z 420 660 "$MASTER" --out "$OUT" >/dev/null
+sips -z 500 660 "$MASTER" --out "$OUT" >/dev/null
 
 echo "==> Done: $OUT"
