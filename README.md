@@ -3,6 +3,8 @@
 Desktop application for macOS (Apple Silicon & Intel) that creates a bootable
 **Windows To Go** drive on an external USB/Thunderbolt disk.
 
+<img src="assets/screenshot.png" alt="Mac2Win Go wizard" width="800">
+
 ## Features
 
 - Native, single-binary UI built with [`egui`](https://github.com/emilk/egui) /
