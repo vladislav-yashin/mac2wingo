@@ -44,7 +44,12 @@ NOTARY_TIMEOUT="${NOTARY_TIMEOUT:-30m}"
 
 TMP_DIR=""
 cleanup() {
-    [ -n "$TMP_DIR" ] && rm -rf "$TMP_DIR"
+    # Must not be the failure that decides the script's exit status: a skipped
+    # rm here used to make successful ad-hoc builds exit non-zero.
+    if [ -n "$TMP_DIR" ]; then
+        rm -rf "$TMP_DIR"
+    fi
+    return 0
 }
 trap cleanup EXIT
 
@@ -201,12 +206,17 @@ case "$MODE" in
         [ -d "$APP_PATH" ] || die "app not found: $APP_PATH"
         sign_app "$APP_PATH"
         if [ "$SKIP_NOTARIZE" = "1" ] || [ -z "$IDENTITY" ]; then
-            [ "$SKIP_NOTARIZE" = "1" ] && log "Skipping notarization (--skip-notarize)"
-            [ -z "$IDENTITY" ] && log "Skipping notarization (ad-hoc build)"
+            if [ "$SKIP_NOTARIZE" = "1" ]; then
+                log "Skipping notarization (--skip-notarize)"
+            else
+                log "Skipping notarization (ad-hoc build)"
+            fi
         else
             notarize "$APP_PATH" app
         fi
-        [ -n "$IDENTITY" ] && verify_app "$APP_PATH"
+        if [ -n "$IDENTITY" ]; then
+            verify_app "$APP_PATH"
+        fi
         log "Done: $APP_PATH"
         ;;
     dmg)
