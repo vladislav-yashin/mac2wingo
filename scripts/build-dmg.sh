@@ -35,6 +35,7 @@ DMG_PATH="$DIST_DIR/$DMG_NAME"
 BACKGROUND="$ROOT_DIR/assets/dmg_background.png"
 ICON="$ROOT_DIR/assets/AppIcon.icns"
 SETTINGS="$ROOT_DIR/scripts/dmgbuild-settings.py"
+INSTALL_COMMAND="$ROOT_DIR/scripts/install.command"
 
 if [ ! -d "$APP_DIR" ]; then
     echo "error: $APP_DIR not found; run ./scripts/build-universal.sh first" >&2
@@ -80,10 +81,17 @@ DMGBUILD_ARGS=(
 if [ -f "$ICON" ]; then
     DMGBUILD_ARGS+=(-D "icon=$ICON")
 fi
+if [ -f "$INSTALL_COMMAND" ]; then
+    chmod +x "$INSTALL_COMMAND"
+    DMGBUILD_ARGS+=(-D "install_command=$INSTALL_COMMAND")
+fi
 
 echo "==> Creating $DMG_NAME"
 rm -f "$DMG_PATH"
 "$DMGBUILD" "${DMGBUILD_ARGS[@]}" "$APP_NAME" "$DMG_PATH"
+
+echo "==> Signing / notarizing the DMG"
+DMG_PATH="$DMG_PATH" "$ROOT_DIR/scripts/sign-and-notarize.sh" --dmg
 
 echo "==> Done: $DMG_PATH"
 echo "    $(du -h "$DMG_PATH" | cut -f1)"

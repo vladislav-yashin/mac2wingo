@@ -114,10 +114,8 @@ $ICON_KEY    <key>CFBundleIdentifier</key>
 </plist>
 PLIST
 
-if command -v codesign >/dev/null 2>&1; then
-    echo "==> Ad-hoc code signing"
-    codesign --force --deep --sign - "$APP_DIR" >/dev/null
-fi
+echo "==> Signing the app"
+"$ROOT_DIR/scripts/sign-and-notarize.sh" --app
 
 echo "==> Done: $APP_DIR"
 echo "    $(lipo -archs "$MACOS_DIR/$BIN_NAME")"

@@ -28,3 +28,23 @@ cargo test --all-features
 ```
 
 There is also a `justfile` (`just check`, `just test`, `just lint`).
+
+## Signing and notarization
+
+`./scripts/build-universal.sh` and `./scripts/build-dmg.sh` sign their output
+through `scripts/sign-and-notarize.sh`. With `MAC2WINGO_SIGN_IDENTITY` unset they
+fall back to ad-hoc signing, which is fine for local work. To produce a
+distributable build, export the Developer ID identity and notarization
+credentials before running them:
+
+```sh
+export MAC2WINGO_SIGN_IDENTITY="Developer ID Application: Name (TEAMID)"
+export APPLE_API_KEY=/path/to/AuthKey.p8 APPLE_API_KEY_ID=... APPLE_API_ISSUER=...
+./scripts/build-universal.sh
+./scripts/build-dmg.sh
+```
+
+`sign-and-notarize.sh --skip-notarize` signs without contacting Apple. The
+release workflow sets the same variables from repository secrets; see README's
+"Signing, notarization and Gatekeeper".
+

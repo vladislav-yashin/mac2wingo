@@ -159,14 +159,58 @@ Package the bundle into a distributable disk image, `dist/Mac2WinGo-<version>.dm
 ./scripts/build-dmg.sh   # or: just dmg
 ```
 
-The image is a styled installer: it opens with the app on the left and an
-`Applications` shortcut on the right, so the app can be dragged into
-`/Applications` like any standard macOS package. The window layout, background
-and icon positions are applied by [dmgbuild](https://github.com/dmgbuild/dmgbuild),
-which writes the Finder `.DS_Store` directly and therefore works on headless CI
-runners (no Finder/AppleScript). If `dmgbuild` is not installed, `build-dmg.sh`
-provisions it into `target/dmgbuild-venv` on first run; set `DMGBUILD` to point
-at an existing executable instead.
+The image is a styled installer: it opens with the app on the left, an
+`Applications` shortcut on the right and an `Install.command` helper below, so
+the app can be dragged into `/Applications` like any standard macOS package. The
+window layout, background and icon positions are applied by
+[dmgbuild](https://github.com/dmgbuild/dmgbuild), which writes the Finder
+`.DS_Store` directly and therefore works on headless CI runners (no
+Finder/AppleScript). If `dmgbuild` is not installed, `build-dmg.sh` provisions it
+into `target/dmgbuild-venv` on first run; set `DMGBUILD` to point at an existing
+executable instead.
+
+### Signing, notarization and Gatekeeper
+
+A Developer ID signature with hardened runtime plus Apple notarization is the
+only way to make a downloaded build open with no Gatekeeper warning. The release
+pipeline signs and notarizes both the app and the DMG through
+`scripts/sign-and-notarize.sh`; it needs a paid Apple Developer Program
+membership and these repository secrets:
+
+| Secret | Purpose |
+| --- | --- |
+| `APPLE_CERTIFICATE` | base64 of the Developer ID Application `.p12` |
+| `APPLE_CERTIFICATE_PASSWORD` | password for that `.p12` |
+| `APPLE_SIGNING_IDENTITY` | `Developer ID Application: Name (TEAMID)` |
+| `APPLE_API_KEY` | base64 (or PEM) of the App Store Connect `.p8` key |
+| `APPLE_API_KEY_ID`, `APPLE_API_ISSUER` | the key id and issuer id |
+
+`APPLE_ID` + `APPLE_TEAM_ID` + `APPLE_APP_SPECIFIC_PASSWORD` are accepted as an
+alternative to the API key.
+
+Locally, when `MAC2WINGO_SIGN_IDENTITY` is unset, `sign-and-notarize.sh` falls
+back to ad-hoc signing (the script above works unchanged), and `build-universal.sh`
+still produces a runnable `dist/Mac2Win Go.app`. Ad-hoc builds (and any build
+without notarization) are blocked by Gatekeeper once they carry the
+`com.apple.quarantine` flag from a browser download. Users who trust such a build
+can either:
+
+1. run `Install.command` from the mounted DMG — it copies the app to
+   `/Applications`, clears the quarantine flag and launches it; or
+2. open System Settings → Privacy & Security and click **Open Anyway** after the
+   first blocked launch; or
+3. remove the flag from the terminal:
+
+   ```sh
+   xattr -dr com.apple.quarantine "/Applications/Mac2Win Go.app"
+   ```
+
+There is no free way to remove the warning entirely: notarization requires a paid
+Developer ID certificate, and the `Install.command` shortcut still opens a
+Terminal window and may itself need a one-time confirmation. Downloads via
+`git clone`, `curl` or a package manager that strips the quarantine attribute are
+not affected.
+
 
 The background (`assets/dmg_background.png` plus its `@2x` variant) is generated
 from a Rust drawing:

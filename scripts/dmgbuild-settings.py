@@ -1,10 +1,11 @@
 # dmgbuild settings for the Mac2Win Go installer.
 #
 # Invoked by scripts/build-dmg.sh with -D overrides:
-#   app_path    absolute path to "Mac2Win Go.app"
-#   app_name    file name inside the volume (e.g. "Mac2Win Go.app")
-#   background  absolute path to assets/dmg_background.png
-#   icon        absolute path to assets/AppIcon.icns
+#   app_path        absolute path to "Mac2Win Go.app"
+#   app_name        file name inside the volume (e.g. "Mac2Win Go.app")
+#   background      absolute path to assets/dmg_background.png
+#   icon            absolute path to assets/AppIcon.icns
+#   install_command absolute path to scripts/install.command (optional)
 #
 # dmgbuild writes .DS_Store directly, so the window layout works on headless
 # CI runners where Finder/AppleScript is unavailable.
@@ -13,6 +14,7 @@ app_path = defines["app_path"]
 app_name = defines["app_name"]
 background = defines["background"]
 icon = defines.get("icon")
+install_command = defines.get("install_command")
 
 files = [(app_path, app_name)]
 symlinks = {"Applications": "/Applications"}
@@ -21,6 +23,10 @@ icon_locations = {
     app_name: (165, 210),
     "Applications": (495, 210),
 }
+
+if install_command:
+    files.append((install_command, "Install.command"))
+    icon_locations["Install.command"] = (330, 90)
 
 window_rect = ((200, 200), (660, 420))
 default_view = "icon-view"

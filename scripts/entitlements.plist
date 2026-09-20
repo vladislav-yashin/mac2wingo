@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Entitlements for the Mac2Win Go hardened-runtime signature.
+
+  The app is not sandboxed (it must partition and format raw disks and run
+  privileged helpers), so only hardened-runtime exceptions belong here. The
+  current build needs none of them: the app spawns the bundled helper tools as
+  separate, same-team-signed processes and does not inject DYLD_* variables or
+  unsigned code.
+
+  If a future change makes the app load a library that is not signed by the same
+  Developer ID team, uncomment the library-validation exception below.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+    -->
+</dict>
+</plist>
