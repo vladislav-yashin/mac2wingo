@@ -160,8 +160,8 @@ Package the bundle into a distributable disk image, `dist/Mac2WinGo-<version>.dm
 ```
 
 The image is a styled installer: it opens with the app on the left, an
-`Applications` shortcut on the right and an `Install.command` helper below, so
-the app can be dragged into `/Applications` like any standard macOS package. The
+`Applications` shortcut on the right and a `How to open.txt` note below, so the
+app can be dragged into `/Applications` like any standard macOS package. The
 window layout, background and icon positions are applied by
 [dmgbuild](https://github.com/dmgbuild/dmgbuild), which writes the Finder
 `.DS_Store` directly and therefore works on headless CI runners (no
@@ -192,24 +192,27 @@ Locally, when `MAC2WINGO_SIGN_IDENTITY` is unset, `sign-and-notarize.sh` falls
 back to ad-hoc signing (the script above works unchanged), and `build-universal.sh`
 still produces a runnable `dist/Mac2Win Go.app`. Ad-hoc builds (and any build
 without notarization) are blocked by Gatekeeper once they carry the
-`com.apple.quarantine` flag from a browser download. Users who trust such a build
-can either:
+`com.apple.quarantine` flag from a browser download. The DMG ships a
+`How to open.txt` note that walks users through the three options:
 
-1. run `Install.command` from the mounted DMG — it copies the app to
-   `/Applications`, clears the quarantine flag and launches it; or
-2. open System Settings → Privacy & Security and click **Open Anyway** after the
-   first blocked launch; or
-3. remove the flag from the terminal:
-
+1. Drag the app to `/Applications`, try to open it, then open System Settings →
+   Privacy & Security and click **Open Anyway** (Apple's official flow; the
+   older control-click → Open shortcut is gone in macOS 15+).
+2. Clear the flag from the terminal:
    ```sh
    xattr -dr com.apple.quarantine "/Applications/Mac2Win Go.app"
    ```
+3. Clear it on the downloaded image before opening it, so nothing inside is
+   quarantined:
+   ```sh
+   xattr -dr com.apple.quarantine ~/Downloads/Mac2WinGo-<version>.dmg
+   ```
 
 There is no free way to remove the warning entirely: notarization requires a paid
-Developer ID certificate, and the `Install.command` shortcut still opens a
-Terminal window and may itself need a one-time confirmation. Downloads via
-`git clone`, `curl` or a package manager that strips the quarantine attribute are
-not affected.
+Developer ID certificate, and a `.command`/script shipped in the DMG does not
+help because Gatekeeper blocks the script itself for the same reason. Downloads
+via `git clone`, `curl` or a package manager that strips the quarantine attribute
+are not affected.
 
 
 The background (`assets/dmg_background.png` plus its `@2x` variant) is generated

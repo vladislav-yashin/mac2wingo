@@ -35,7 +35,7 @@ DMG_PATH="$DIST_DIR/$DMG_NAME"
 BACKGROUND="$ROOT_DIR/assets/dmg_background.png"
 ICON="$ROOT_DIR/assets/AppIcon.icns"
 SETTINGS="$ROOT_DIR/scripts/dmgbuild-settings.py"
-INSTALL_COMMAND="$ROOT_DIR/scripts/install.command"
+INSTRUCTIONS="$ROOT_DIR/assets/How to open.txt"
 
 if [ ! -d "$APP_DIR" ]; then
     echo "error: $APP_DIR not found; run ./scripts/build-universal.sh first" >&2
@@ -81,9 +81,8 @@ DMGBUILD_ARGS=(
 if [ -f "$ICON" ]; then
     DMGBUILD_ARGS+=(-D "icon=$ICON")
 fi
-if [ -f "$INSTALL_COMMAND" ]; then
-    chmod +x "$INSTALL_COMMAND"
-    DMGBUILD_ARGS+=(-D "install_command=$INSTALL_COMMAND")
+if [ -f "$INSTRUCTIONS" ]; then
+    DMGBUILD_ARGS+=(-D "instructions=$INSTRUCTIONS")
 fi
 
 echo "==> Creating $DMG_NAME"

@@ -1,0 +1,38 @@
+Mac2Win Go - how to open this app
+=================================
+
+This build is not notarized by Apple, so macOS Gatekeeper blocks it the first
+time it is opened after a browser download. That is expected, and safe to work
+around if you trust the source. Pick one option, then use the app normally.
+
+Option 1 - no Terminal (recommended)
+------------------------------------
+1. Drag "Mac2Win Go" into the Applications folder.
+2. Try to open it. macOS shows "Apple cannot check ... for malicious software";
+   click Done.
+3. Open System Settings > Privacy & Security, scroll to Security and click
+   "Open Anyway", then confirm "Open".
+
+After that macOS remembers the exception and you can launch the app by
+double-clicking it.
+
+Option 2 - Terminal (faster)
+----------------------------
+After copying the app to Applications, run:
+
+    xattr -dr com.apple.quarantine "/Applications/Mac2Win Go.app"
+    open "/Applications/Mac2Win Go.app"
+
+Option 3 - clear the disk image before opening it
+-------------------------------------------------
+If the DMG is still in your Downloads folder, clear the flag on it first so
+nothing inside is quarantined:
+
+    xattr -dr com.apple.quarantine ~/Downloads/Mac2WinGo-<version>.dmg
+
+Why does this happen?
+---------------------
+Gatekeeper only opens apps that are signed with an Apple Developer ID and
+notarized by Apple. Both require a paid Apple Developer Program membership;
+this build is only ad-hoc signed. See the project README section
+"Signing, notarization and Gatekeeper".

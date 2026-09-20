@@ -84,7 +84,7 @@ jobs:
       - name: Warn about the unsigned build
         if: startsWith(github.ref, 'refs/tags/') && env.MAC2WINGO_SIGN_IDENTITY == ''
         run: |
-          echo "::warning title=Unsigned release::No Developer ID signing identity is configured. The DMG is ad-hoc signed and not notarized, so Gatekeeper blocks it once downloaded; users must run Install.command (or clear com.apple.quarantine)."
+          echo "::warning title=Unsigned release::No Developer ID signing identity is configured. The DMG is ad-hoc signed and not notarized, so Gatekeeper blocks it once downloaded; tell users to follow the \"How to open.txt\" note inside the DMG (or clear com.apple.quarantine)."
 
       - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
